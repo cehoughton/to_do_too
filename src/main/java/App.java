@@ -20,6 +20,24 @@ public class App {
         staticFileLocation("/public");
         String layout = "templates/layout.vtl";
 
+        get("/", (request, response) -> {
+         HashMap<String, Object> model = new HashMap<String, Object>();
+         model.put("template", "templates/index.vtl");
+         return new ModelAndView(model, layout);
+       }, new VelocityTemplateEngine());
+
+       post("/tasks", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+
+      String description = request.queryParams("description");
+      Task newTask = new Task(description);
+      request.session().attribute("task", newTask);
+
+      model.put("template", "templates/success.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+
         //RESTful ARCHITECTURE
         //Use POST to create something on the server
         //Use GET to retrieve something from the server
